@@ -1,6 +1,6 @@
 # Banana Hub Config - Bloz Kids Kaitun By obii
 
-The Best Config Kaitun For Blox Fruits | Created By obii
+The Best Config Kaitun For Blox Fruits | Created By obii, Config By MinhZ
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Roblox](https://img.shields.io/badge/platform-Roblox-red)
