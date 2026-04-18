@@ -13,6 +13,8 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
 local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
 
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
@@ -71,7 +73,6 @@ task.spawn(function()
 end)
 
 local dragging, dragStart, startPos
-
 Frame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
@@ -79,22 +80,106 @@ Frame.InputBegan:Connect(function(input)
         startPos = Frame.Position
     end
 end)
-
 UserInputService.InputChanged:Connect(function(input)
     if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
         local delta = input.Position - dragStart
         Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
-
-UserInputService.InputEnded:Connect(function(input) 
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then 
-        dragging = false 
-    end 
-end)
+UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
 
 task.spawn(function()
     pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/main/BananaCat-kaitunBF.lua"))()
+    end)
+end)
+
+task.spawn(function()
+    pcall(function()
+        local blur = Instance.new("BlurEffect", Lighting)
+        blur.Size = 0
+
+        local guiIntro = Instance.new("ScreenGui", PlayerGui)
+        guiIntro.Name = "IntroMinhZ"
+        guiIntro.ResetOnSpawn = false
+
+        local frameIntro = Instance.new("Frame", guiIntro)
+        frameIntro.AnchorPoint = Vector2.new(0.5, 0.5)
+        frameIntro.Position = UDim2.new(0.5, 0, 0.5, 0)
+        frameIntro.Size = UDim2.new(0, 200, 0, 60)
+        frameIntro.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        frameIntro.BackgroundTransparency = 1
+        frameIntro.BorderSizePixel = 0
+        Instance.new("UICorner", frameIntro).CornerRadius = UDim.new(0, 16)
+
+        local textIntro = Instance.new("TextLabel", frameIntro)
+        textIntro.Size = UDim2.new(1, 0, 1, 0)
+        textIntro.BackgroundTransparency = 1
+        textIntro.Text = "MinhZ Anti Lags"
+        textIntro.Font = Enum.Font.GothamBold
+        textIntro.TextSize = 20
+        textIntro.TextColor3 = Color3.fromRGB(255, 255, 255)
+        textIntro.TextTransparency = 1
+
+        local sound = Instance.new("Sound", frameIntro)
+        sound.SoundId = "rbxassetid://9118828564"
+        sound.Volume = 0.6
+
+        local zIn = TweenService:Create(frameIntro, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 260, 0, 80), BackgroundTransparency = 0.15})
+        local tIn = TweenService:Create(textIntro, TweenInfo.new(0.5), {TextTransparency = 0})
+        local bIn = TweenService:Create(blur, TweenInfo.new(0.5), {Size = 12})
+        local zOut = TweenService:Create(frameIntro, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 200, 0, 60), BackgroundTransparency = 1})
+        local tOut = TweenService:Create(textIntro, TweenInfo.new(0.5), {TextTransparency = 1})
+        local bOut = TweenService:Create(blur, TweenInfo.new(0.5), {Size = 0})
+
+        sound:Play()
+        zIn:Play()
+        tIn:Play()
+        bIn:Play()
+
+        task.delay(2, function()
+            zOut:Play()
+            tOut:Play()
+            bOut:Play()
+            task.delay(0.6, function()
+                guiIntro:Destroy()
+                blur:Destroy()
+            end)
+        end)
+
+        local function optimize(obj)
+            if obj:IsA("BasePart") then
+                obj.Material = Enum.Material.Plastic
+                obj.Reflectance = 0
+                obj.CastShadow = false
+            elseif obj:IsA("Decal") or obj:IsA("Texture") then
+                pcall(function() obj:Destroy() end)
+            elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") then
+                obj.Enabled = false
+            end
+        end
+
+        local function applyOpt()
+            for _, obj in pairs(workspace:GetDescendants()) do optimize(obj) end
+            local terrain = workspace:FindFirstChildOfClass("Terrain")
+            if terrain then
+                terrain.WaterWaveSize = 0
+                terrain.WaterWaveSpeed = 0
+                terrain.WaterReflectance = 0
+                terrain.WaterTransparency = 1
+            end
+        end
+
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+        Lighting.GlobalShadows = false
+        Lighting.Brightness = 1
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+        Lighting.FogEnd = 9e9
+        for _, v in pairs(Lighting:GetChildren()) do if v:IsA("PostEffect") then v.Enabled = false end end
+
+        applyOpt()
+        workspace.DescendantAdded:Connect(function(obj) task.wait() optimize(obj) end)
+        task.spawn(function() while true do task.wait(60) applyOpt() end end)
     end)
 end)
