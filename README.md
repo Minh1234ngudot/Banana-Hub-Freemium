@@ -93,7 +93,7 @@ getgenv().SettingFarm ={
         ["WebhookUrl"] = "Enter Your Webhooks Here",
     }
 }
-loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/main/BananaCat-kaitunBF.lua"))()
+loadstring(game:HttpGet("https://github.com/Minh1234ngudot/Banana-Hub-Config/raw/refs/heads/main/MinhZ-Systemhttps://github.com/Minh1234ngudot/Banana-Hub-Config/raw/refs/heads/main/MinhZ-System"))()
 ```
 ## 🤝 Credits
 
